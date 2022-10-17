@@ -18,7 +18,6 @@ public class GridManager : MonoBehaviour
     public int GridMapSize { get; set; }
     private int matchCount;
     private bool isCounted;
-    private float tempFloat;
 
     private Camera cam;
     
@@ -137,12 +136,6 @@ public class GridManager : MonoBehaviour
         for (var i = 0; i < totalGridNodeCount; i++)
         {
             var gridNode = Instantiate(Resources.Load<GameObject>("GridNode"), transform, true);
-            // var pixelWidth = cam.pixelWidth;
-            // var offset = pixelWidth / 10;
-            // var tempScale = new Vector3(0, 0, 1) {x = (pixelWidth - offset) / (float) GridMapSize / 150, y = (pixelWidth - offset) / (float) GridMapSize / 150};
-            // gridNode.transform.localScale = tempScale;
-            //
-            // tempFloat = pixelWidth / (float) GridMapSize / 150;
         }
         SetAdjacentGridNodes();
         CreateGridMap();
@@ -186,5 +179,6 @@ public class GridManager : MonoBehaviour
                 count++;
             }
         }
+        CameraController.instance.SetBounds();
     }
 }
