@@ -20,11 +20,11 @@ public class CameraController : MonoBehaviour
         GridManager = GridManager.Instance;
     }
     
-    public void SetBounds()
+    public void SetCameraPosition()
     {
         var maxGridNode = GridManager.transform.GetChild(GridManager.transform.childCount - GridManager.GridMapSize)
             .GetComponent<MeshRenderer>().bounds.max;
-        var  minGridNode = GridManager.transform.GetChild(GridManager.GridMapSize - 1)
+        var minGridNode = GridManager.transform.GetChild(GridManager.GridMapSize - 1)
             .GetComponent<MeshRenderer>().bounds.min;
         
         var objectSizes = maxGridNode - minGridNode;

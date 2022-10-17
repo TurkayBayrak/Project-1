@@ -4,14 +4,13 @@ using UnityEngine;
 
 public class GridNode : MonoBehaviour
 {
-    public bool isMarked;
+    public bool IsMarked { get; set; }
 
-    public Material defaultMaterial, materialWithXIcon;
+    [SerializeField] private Material defaultMaterial, materialWithXIcon;
     private MeshRenderer meshRenderer;
 
     public AdjacentGridNodes adjacentGridNodes;
-    public List<GridNode> adjacentGridNodeList = new List<GridNode>();
-    private GridManager GridManager;
+    public List<GridNode> AdjacentGridNodeList { get; } = new List<GridNode>();
 
     private void Awake()
     {
@@ -20,22 +19,20 @@ public class GridNode : MonoBehaviour
 
     private void Start()
     {
-        GridManager = GridManager.Instance;
         SetAdjacentGridNodeList();
     }
 
-    public void MarkTheGrid()
+    public void SetGridNodeMaterial()
     {
-        meshRenderer.material = isMarked ? defaultMaterial : materialWithXIcon;
-        isMarked = !isMarked;
+        meshRenderer.material = IsMarked ?  materialWithXIcon : defaultMaterial;
     }
     
     private void SetAdjacentGridNodeList()
     {
-        adjacentGridNodeList.Add(adjacentGridNodes.upGrid);
-        adjacentGridNodeList.Add(adjacentGridNodes.rightGrid);
-        adjacentGridNodeList.Add(adjacentGridNodes.downGrid);
-        adjacentGridNodeList.Add(adjacentGridNodes.leftGrid);
+        AdjacentGridNodeList.Add(adjacentGridNodes.upGrid);
+        AdjacentGridNodeList.Add(adjacentGridNodes.rightGrid);
+        AdjacentGridNodeList.Add(adjacentGridNodes.downGrid);
+        AdjacentGridNodeList.Add(adjacentGridNodes.leftGrid);
     }
 }
 

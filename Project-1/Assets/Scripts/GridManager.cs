@@ -12,12 +12,14 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Button rebuildButton;
     [SerializeField] private TextMeshProUGUI matchCountText;
 
-    public List<GridNode> matchedGridNodeList = new List<GridNode>();
-    public List<GridNode> markedGridNodeList = new List<GridNode>();
+    private readonly List<GridNode> matchedGridNodeList = new List<GridNode>();
+    private readonly List<GridNode> markedGridNodeList = new List<GridNode>();
 
-    public int GridMapSize { get; set; }
+    public int GridMapSize { get; private set; }
     private int matchCount;
     private bool isCounted;
+    private bool isMatch;
+    private GridNode currentNode;
 
     private Camera cam;
     
@@ -44,15 +46,20 @@ public class GridManager : MonoBehaviour
 
         if (!hitObject.TryGetComponent(out GridNode gridNode)) return;
 
-        gridNode.MarkTheGrid();
+        currentNode = gridNode;
+        gridNode.IsMarked = !gridNode.IsMarked;
         
-        if (gridNode.isMarked)
+        if (gridNode.IsMarked)
         {
             markedGridNodeList.Add(gridNode);
             CheckMatchCondition();
         }
         else
+        {
             markedGridNodeList.Remove(gridNode);
+            AudioManager.instance.PlaySound(Sounds.UnmarkSound);
+            gridNode.SetGridNodeMaterial();
+        }
         
         if (isCounted)
             isCounted = false;
@@ -63,14 +70,26 @@ public class GridManager : MonoBehaviour
         foreach (var gridNode in markedGridNodeList)
         {
             var markedCount = 0;
-            foreach (var adjacentGridNode in gridNode.adjacentGridNodeList)
+            foreach (var adjacentGridNode in gridNode.AdjacentGridNodeList)
             {
                 if (!adjacentGridNode) continue;
-                if (!adjacentGridNode.isMarked) continue;
+                if (!adjacentGridNode.IsMarked) continue;
                 markedCount++;
-                if (markedCount > 1)
-                    SetListsBeforeMatchAction(gridNode);
+                if (markedCount <= 1) continue;
+                SetListsBeforeMatchAction(gridNode);
+                isMatch = true;
             }
+        }
+
+        if (isMatch)
+        {
+            AudioManager.instance.PlaySound(Sounds.MatchSound);
+            isMatch = false;
+        }
+        else
+        {
+            AudioManager.instance.PlaySound(Sounds.MarkSound);
+            currentNode.SetGridNodeMaterial();
         }
     }
     
@@ -79,9 +98,9 @@ public class GridManager : MonoBehaviour
         if (!matchedGridNodeList.Contains(gridNode))
             matchedGridNodeList.Add(gridNode);
 
-        foreach (var adjacentGridNode in gridNode.adjacentGridNodeList)
+        foreach (var adjacentGridNode in gridNode.AdjacentGridNodeList)
         {
-            if (adjacentGridNode && adjacentGridNode.isMarked && !matchedGridNodeList.Contains(adjacentGridNode))
+            if (adjacentGridNode && adjacentGridNode.IsMarked && !matchedGridNodeList.Contains(adjacentGridNode))
                 matchedGridNodeList.Add(adjacentGridNode);
         }
         StartCoroutine(WaitForGridNodeCalculations());
@@ -97,7 +116,8 @@ public class GridManager : MonoBehaviour
     {
         foreach (var gridNode in matchedGridNodeList)
         {
-            gridNode.MarkTheGrid();
+            gridNode.IsMarked = !gridNode.IsMarked;
+            gridNode.SetGridNodeMaterial();
             markedGridNodeList.Remove(gridNode);
         }
         matchedGridNodeList.Clear();
@@ -135,7 +155,7 @@ public class GridManager : MonoBehaviour
 
         for (var i = 0; i < totalGridNodeCount; i++)
         {
-            var gridNode = Instantiate(Resources.Load<GameObject>("GridNode"), transform, true);
+            Instantiate(Resources.Load<GameObject>("GridNode"), transform, true);
         }
         SetAdjacentGridNodes();
         CreateGridMap();
@@ -179,6 +199,6 @@ public class GridManager : MonoBehaviour
                 count++;
             }
         }
-        CameraController.instance.SetBounds();
+        CameraController.instance.SetCameraPosition();
     }
 }
