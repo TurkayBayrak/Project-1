@@ -15,9 +15,10 @@ public class GridManager : MonoBehaviour
     public List<GridNode> matchedGridNodeList = new List<GridNode>();
     public List<GridNode> markedGridNodeList = new List<GridNode>();
 
-    private int gridMapSize;
+    public int GridMapSize { get; set; }
     private int matchCount;
     private bool isCounted;
+    private float tempFloat;
 
     private Camera cam;
     
@@ -125,13 +126,23 @@ public class GridManager : MonoBehaviour
     private IEnumerator WaitForDestroyOldGrids()
     {
         yield return new WaitUntil(() => transform.childCount == 0);
-        gridMapSize = int.Parse(gridSizeInputFieldText.text);
         
-        var totalGridNodeCount = gridMapSize * gridMapSize;
+        if (int.TryParse(gridSizeInputFieldText.text, out var size))
+            GridMapSize = size;
+        else 
+            Debug.LogError("Please Enter A Number");
+        
+        var totalGridNodeCount = GridMapSize * GridMapSize;
 
         for (var i = 0; i < totalGridNodeCount; i++)
         {
-            Instantiate(Resources.Load<GameObject>("Grid"), transform, true);
+            var gridNode = Instantiate(Resources.Load<GameObject>("GridNode"), transform, true);
+            // var pixelWidth = cam.pixelWidth;
+            // var offset = pixelWidth / 10;
+            // var tempScale = new Vector3(0, 0, 1) {x = (pixelWidth - offset) / (float) GridMapSize / 150, y = (pixelWidth - offset) / (float) GridMapSize / 150};
+            // gridNode.transform.localScale = tempScale;
+            //
+            // tempFloat = pixelWidth / (float) GridMapSize / 150;
         }
         SetAdjacentGridNodes();
         CreateGridMap();
@@ -141,19 +152,19 @@ public class GridManager : MonoBehaviour
     {
         for (var i = 0; i < transform.childCount; i++)
         {
-            if (i + gridMapSize < transform.childCount)
+            if (i + GridMapSize < transform.childCount)
                 transform.GetChild(i).GetComponent<GridNode>().adjacentGridNodes.rightGrid =
-                    transform.GetChild(i + gridMapSize).GetComponent<GridNode>();
+                    transform.GetChild(i + GridMapSize).GetComponent<GridNode>();
 
-            if ((i + 1) % gridMapSize != 0)
+            if ((i + 1) % GridMapSize != 0)
                 transform.GetChild(i).GetComponent<GridNode>().adjacentGridNodes.downGrid =
                     transform.GetChild(i + 1).GetComponent<GridNode>();
             
-            if (i - gridMapSize >= 0)
+            if (i - GridMapSize >= 0)
                 transform.GetChild(i).GetComponent<GridNode>().adjacentGridNodes.leftGrid =
-                    transform.GetChild(i - gridMapSize).GetComponent<GridNode>();
+                    transform.GetChild(i - GridMapSize).GetComponent<GridNode>();
 
-            if (i % gridMapSize != 0)
+            if (i % GridMapSize != 0)
                 transform.GetChild(i).GetComponent<GridNode>().adjacentGridNodes.upGrid =
                     transform.GetChild(i - 1).GetComponent<GridNode>();
         }
@@ -164,14 +175,14 @@ public class GridManager : MonoBehaviour
         var a = 0f;
         var count = 0;
         
-        for (var x = 0; x < gridMapSize; x++, a += 1.1f)
+        for (var x = 0; x < GridMapSize; x++, a += 1)
         {
             var b = 0f;
-            for (var y = 0; y < gridMapSize; y++ , b -= 1.1f)
+            for (var y = 0; y < GridMapSize; y++ , b -= 1)
             {
                 var grid = transform.GetChild(count).GetComponent<GridNode>();
                 
-                grid.transform.position = new Vector3( a, b + 3, 0);
+                grid.transform.position = new Vector3( a - GridMapSize / 2f + 0.5f, b + GridMapSize / 2f - 0.5f, 0);
                 count++;
             }
         }

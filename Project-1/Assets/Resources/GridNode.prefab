@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3809397738703782340}
   - component: {fileID: 8844974568302371408}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: GridNode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 315927566578087576}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.99, y: 0.99, z: 0.99}
+  m_LocalScale: {x: 0.95, y: 0.95, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -109,11 +109,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a131452564f84e99983b4fcf77b5762, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultMat: {fileID: 2100000, guid: 754f585343b144c189a3603c14cf4b88, type: 2}
-  xMat: {fileID: 2100000, guid: e1260bb58f2e74190b8f185e3aa6b68e, type: 2}
-  AdjacentGrids:
+  isMarked: 0
+  defaultMaterial: {fileID: 2100000, guid: 754f585343b144c189a3603c14cf4b88, type: 2}
+  materialWithXIcon: {fileID: 2100000, guid: e1260bb58f2e74190b8f185e3aa6b68e, type: 2}
+  adjacentGridNodes:
     upGrid: {fileID: 0}
     rightGrid: {fileID: 0}
     downGrid: {fileID: 0}
     leftGrid: {fileID: 0}
-  adjacentGridList: []
+  adjacentGridNodeList: []
