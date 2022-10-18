@@ -12,6 +12,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private Button rebuildButton;
     [SerializeField] private TextMeshProUGUI matchCountText;
 
+    private const string matchCountString = "Match Count: ";
+
     private readonly List<GridNode> matchedGridNodeList = new List<GridNode>();
     private readonly List<GridNode> markedGridNodeList = new List<GridNode>();
 
@@ -124,14 +126,14 @@ public class GridManager : MonoBehaviour
         
         if (isCounted) return;
         matchCount++;
-        matchCountText.text = matchCount.ToString();
+        matchCountText.text = matchCountString + matchCount;
         isCounted = true;
     }
 
     private void CreateGrids()
     {
         matchCount = 0;
-        matchCountText.text = matchCount.ToString();
+        matchCountText.text = matchCountString + matchCount;
         markedGridNodeList.Clear();
         matchedGridNodeList.Clear();
         
